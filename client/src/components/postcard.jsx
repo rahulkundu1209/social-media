@@ -1,87 +1,76 @@
-import React from 'react';
-import { 
-  Card, 
-  CardContent, 
-  Typography, 
-  IconButton, 
-  Divider, 
-  Stack,
-  Box 
-} from '@mui/material';
-import { 
-  ArrowUpward, 
-  ArrowDownward, 
-  ChatBubbleOutline, 
-  Share 
-} from '@mui/icons-material';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowUpward, ArrowDownward, ChatBubbleOutline, Share, BookmarkBorder } from '@mui/icons-material';
 
-// components/PostCard.js - Temporary simplified version
-const PostCard = ({ post }) => {
-  return (
-    <Card sx={{ my: 2, p: 2 }}>
-      <Typography variant="h5">{post?.title || 'No Title'}</Typography>
-      <Typography>{post?.content || 'No Content'}</Typography>
-      <Typography variant="caption">
-        By {post?.author || 'Unknown'} • {post?.timestamp || ''}
-      </Typography>
-    </Card>
-  );
-};
+export default function PostCard({ post }) {
+  const [votes, setVotes] = useState(post.votes);
+  
+  const handleVote = (value) => {
+    setVotes(votes + value);
+  };
 
-/*const PostCard = ({ post, onUpvote, onDownvote }) => {
-  console.log('Current post:', post);
   return (
-    <Card sx={{ 
-      mb: 2, 
-      borderLeft: '4px solid #ff4500',
-      '&:hover': { boxShadow: 2 } 
-    }}>
-      <CardContent sx={{ display: 'flex' }}>
-        <Stack 
-          direction="column" 
-          alignItems="center" 
-          spacing={1}
-          sx={{ mr: 2, minWidth: 56 }}
-        >
-          <IconButton onClick={() => onUpvote(post.id)} color="inherit">
+    <div className="bg-white rounded-lg shadow-sm mb-4 p-4">
+      <div className="flex gap-4">
+        {/* Voting Section */}
+        <div className="flex flex-col items-center gap-1">
+          <button onClick={() => handleVote(1)} className="text-gray-500 hover:text-green-500">
             <ArrowUpward />
-          </IconButton>
-          <Typography variant="subtitle1">
-            {post.upvotes - post.downvotes}
-          </Typography>
-          <IconButton onClick={() => onDownvote(post.id)} color="inherit">
+          </button>
+          <span className="font-medium">{votes}</span>
+          <button onClick={() => handleVote(-1)} className="text-gray-500 hover:text-red-500">
             <ArrowDownward />
-          </IconButton>
-        </Stack>
+          </button>
+        </div>
 
-        <Box sx={{ flexGrow: 1 }}>
-          <Box sx={{ mb: 1 }}>
-            <Typography variant="caption" color="text.secondary">
-              Posted by {post.author} • {post.timestamp}
-            </Typography>
-          </Box>
-          <Typography variant="h6" gutterBottom>{post.title}</Typography>
-          <Typography variant="body1" component="p">{post.content}</Typography>
-          <Divider sx={{ my: 2 }} />
-          <Stack direction="row" spacing={1}>
-            <IconButton size="small">
-              <ChatBubbleOutline fontSize="small" />
-              <Typography variant="caption" sx={{ ml: 0.5 }}>
-                {post.comments} Comments
-              </Typography>
-            </IconButton>
-            <IconButton size="small">
-              <Share fontSize="small" />
-              <Typography variant="caption" sx={{ ml: 0.5 }}>
-                Share
-              </Typography>
-            </IconButton>
-          </Stack>
-        </Box>
-      </CardContent>
-    </Card>
+        {/* Post Content */}
+        <div className="flex-1">
+          <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+            <img 
+              src={post.author.avatar} 
+              alt={post.author.username} 
+              className="w-6 h-6 rounded-full"
+            />
+            <span>@{post.author.username}</span>
+            <span>·</span>
+            <span>{post.timestamp}</span>
+          </div>
+
+          <Link to={`/post/${post.id}`} className="text-lg font-medium mb-2 hover:underline">
+            {post.title}
+          </Link>
+
+          <p className="text-gray-700 mb-4">{post.content}</p>
+
+          {/* Post Actions */}
+          <div className="flex items-center gap-4 text-gray-500">
+            <button className="flex items-center gap-1 hover:text-blue-500">
+              <ChatBubbleOutline />
+              <span>{post.comments} Comments</span>
+            </button>
+            <button className="flex items-center gap-1 hover:text-green-500">
+              <Share />
+              <span>Share</span>
+            </button>
+            <button className="flex items-center gap-1 hover:text-yellow-500">
+              <BookmarkBorder />
+              <span>Save</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-};
-*/
-
-export default PostCard;
+}
+export const mockPosts = [
+    {
+        id: 1,
+        title: "Just deployed my new MERN stack project!",
+        content: "Really excited to share this new social media platform I've been working on...",
+        author: { username: "devguy", avatar: "https://i.pravatar.cc/40" },
+        votes: 42,
+        comments: 15,
+        timestamp: "2h ago"
+    },
+    // Add more mock posts...
+];
