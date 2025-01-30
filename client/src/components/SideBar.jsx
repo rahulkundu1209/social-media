@@ -1,36 +1,18 @@
-// components/Sidebar.js
-import React from 'react';
-import { 
-  List, 
-  ListItem, 
-  ListItemText, 
-  Typography, 
-  Paper 
-} from '@mui/material';
-
-const Sidebar = () => {
+// src/components/Sidebar.js
+export default function Sidebar() {
   return (
-    <Paper sx={{ 
-      position: 'sticky',
-      top: 80,
-      p: 2,
-      borderRadius: 2
-    }}>
-      <Typography variant="h6" gutterBottom>
-        Trending Topics
-      </Typography>
-      <List dense>
-        {['Technology', 'Programming', 'Web Development', 'React'].map((text) => (
-          <ListItem button key={text}>
-            <ListItemText 
-              primary={text} 
-              slotProps={{ primary: primaryTypographyProps,variant: 'body2' }}
-            />
-          </ListItem>
+    <div className="bg-white p-6 rounded-xl shadow-sm">
+      <h2 className="text-lg font-semibold mb-4">Trending Topics</h2>
+      <div className="space-y-2">
+        {['Technology', 'Programming', 'Web Development', 'MERN Stack'].map(topic => (
+          <button 
+            key={topic}
+            className="text-gray-600 hover:text-blue-600 w-full text-left px-2 py-1 rounded hover:bg-gray-50"
+          >
+            #{topic}
+          </button>
         ))}
-      </List>
-    </Paper>
+      </div>
+    </div>
   );
-};
-
-export default Sidebar;
+}
