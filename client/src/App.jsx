@@ -1,27 +1,55 @@
-// src/App.js (Updated)
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import MainLayout from './layouts/MainLayout';
+// App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
-import Profile from './pages/Profile';
-import Login from './pages/Login';
-import PostDetail from './pages/PostDetail';
 import CreatePost from './pages/CreatePost';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import './App.css';
 
-export default function App() {
+function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
+        <NavBar />
         <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/post/:id" element={<PostDetail />} />
-            <Route path="/create-post" element={<CreatePost />} />
-          </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/create" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+          <Route path="/" element={<Home />} />
         </Routes>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
+
+function NavBar() {
+  const { user, logout } = useAuth();
+  
+  return (
+    <nav>
+      <ul>
+        <li><Link to="/">Home</Link></li>
+        {user ? (
+          <>
+            <li><Link to="/create">Create Post</Link></li>
+            <li><button onClick={logout}>Logout ({user.name})</button></li>
+          </>
+        ) : (
+          <>
+            <li><Link to="/login">Login</Link></li>
+            <li><Link to="/register">Register</Link></li>
+          </>
+        )}
+      </ul>
+    </nav>
+  );
+}
+
+function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+  return user ? children : <Navigate to="/login" />;
+}
+
+export default App;

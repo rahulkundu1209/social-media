@@ -1,34 +1,62 @@
-// src/pages/CreatePost.js
-import { Button, TextField } from '@mui/material';
+// CreatePost.js (updated)
+import React, { useState } from "react";
+import axios from "axios";
+import { useAuth } from '../context/AuthContext';
 
-export default function CreatePost() {
+function CreatePost() {
+  const { user } = useAuth();
+  const [newPost, setNewPost] = useState({
+    title: "",
+    content: "",
+    file: null,
+  });
+
+  const handlePostSubmit = async () => {
+    const formData = new FormData();
+    formData.append("title", newPost.title);
+    formData.append("content", newPost.content);
+    formData.append("file", newPost.file);
+    formData.append("user", user._id);
+
+    try {
+      await axios.post("http://localhost:5000/api/posts", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setNewPost({ title: "", content: "", file: null });
+      alert('Post created successfully!');
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert('Error creating post');
+    }
+  };
+
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-sm">
-      <h1 className="text-2xl font-bold mb-6">Create New Post</h1>
-      <form className="space-y-4">
-        <TextField
-          fullWidth
-          label="Post Title"
-          variant="outlined"
-          className="!mb-4"
-        />
-        <TextField
-          fullWidth
-          multiline
-          rows={6}
-          label="Post Content"
-          variant="outlined"
-          className="!mb-4"
-        />
-        <div className="flex justify-end">
-          <Button 
-            variant="contained" 
-            className="!bg-blue-600 hover:!bg-blue-700 !text-white"
-          >
-            Publish Post
-          </Button>
-        </div>
-      </form>
+    <div className="create-post">
+      <h2>Create a Post</h2>
+      <input
+        type="text"
+        name="title"
+        placeholder="Title"
+        value={newPost.title}
+        onChange={(e) => setNewPost({...newPost, title: e.target.value})}
+      />
+      <textarea
+        name="content"
+        placeholder="Content"
+        value={newPost.content}
+        onChange={(e) => setNewPost({...newPost, content: e.target.value})}
+      />
+      <input 
+        type="file" 
+        name="file" 
+        onChange={(e) => setNewPost({...newPost, file: e.target.files[0]})} 
+      />
+      <button onClick={handlePostSubmit}>Post</button>
     </div>
   );
 }
+
+export default CreatePost;
