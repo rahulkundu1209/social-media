@@ -55,6 +55,16 @@ router.get("/user", authenticateToken, async (req, res) => {
   }
 });
 
+//Get data about token item in the local storage to check if the user is logged in
+router.get("/me", authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Middleware to verify token
 function authenticateToken(req, res, next) {
   const token = req.header("Authorization");
