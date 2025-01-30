@@ -28,7 +28,7 @@ function NavBar() {
   const { user, logout } = useAuth();
   
   return (
-    <nav>
+    <nav className='navbar'>
       <ul>
         <li><Link to="/">Home</Link></li>
         {user ? (
@@ -43,6 +43,10 @@ function NavBar() {
           </>
         )}
       </ul>
+      <span className='logo'>
+        <h3>FAKEBOOK</h3>
+        <p>How much fake can you be?</p>
+      </span>
     </nav>
   );
 }
