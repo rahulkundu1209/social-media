@@ -33,7 +33,7 @@ function Home() {
   {
     title: "DIY Home Office Setup",
     content: "Transforming a small closet into a productive workspace - before/after shots",
-    file: "office.jpg",
+    file: "/pexels-seven11nash-380768.jpg",
     user: { name: "HomeOfficeGuru", _id: "user4" },
     likes: 89,
     comments: [
@@ -97,7 +97,28 @@ function Home() {
           <h3>{post.title}</h3>
           <p>By {post.user?.name}</p>
           <p>{post.content}</p>
-          {/* ... existing media display code ... */}
+          {post.file && (
+						<div>
+							{post.file.includes(".mp4") ? (
+								<video width="320" height="240" controls>
+									<source
+										src={
+									`http://localhost:5000/uploads/${post.file}`
+										}
+										type="video/mp4"
+									/>
+									Your browser does not support the video tag.
+								</video>
+							) : (
+								<img
+									src={
+									`http://localhost:5000/uploads/${post.file}`
+									}
+									alt="Post Media"
+								/>
+							)}
+						</div>
+					)}
           
           <div className="post-actions">
             <button 
