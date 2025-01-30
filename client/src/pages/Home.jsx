@@ -6,7 +6,45 @@ import { useAuth } from '../context/AuthContext';
 function Home() {
   const { user } = useAuth();
   const [commentInput, setCommentInput] = useState("");
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([{
+    title: "Morning Coffee Ritual",
+    content: "Discovering the perfect pour-over technique - 5 tips for better coffee at home",
+    file: "coffee.jpg",
+    user: { name: "CoffeeLover", _id: "user1" },
+    likes: 28,
+    comments: [
+      { 
+        user: { name: "BaristaPro", _id: "user2" },
+        text: "Great tips! Try grinding slightly coarser next time",
+        _id: "comment1"
+      }
+    ],
+    createdAt: "2023-07-25T08:30:00Z"
+  },
+  {
+    title: "Night Sky Photography Guide",
+    content: "Capturing the Milky Way: Camera settings and locations for best results",
+    file: "stars.mp4",
+    user: { name: "AstroShooter", _id: "user3" },
+    likes: 142,
+    comments: [],
+    createdAt: "2023-07-24T20:15:00Z"
+  },
+  {
+    title: "DIY Home Office Setup",
+    content: "Transforming a small closet into a productive workspace - before/after shots",
+    file: "office.jpg",
+    user: { name: "HomeOfficeGuru", _id: "user4" },
+    likes: 89,
+    comments: [
+      {
+        user: { name: "RemoteWorker", _id: "user5" },
+        text: "This is exactly what I needed!",
+        _id: "comment2"
+      }
+    ],
+    createdAt: "2023-07-23T14:00:00Z"
+  }]);
 
   useEffect(() => {
     const fetchPosts = async () => {
