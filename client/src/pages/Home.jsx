@@ -33,7 +33,7 @@ function Home() {
   {
     title: "DIY Home Office Setup",
     content: "Transforming a small closet into a productive workspace - before/after shots",
-    file: "/pexels-seven11nash-380768.jpg",
+    file: "office.jpg",
     user: { name: "HomeOfficeGuru", _id: "user4" },
     likes: 89,
     comments: [
