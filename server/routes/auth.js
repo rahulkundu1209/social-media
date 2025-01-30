@@ -2,11 +2,13 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { authenticateToken } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 // Register
 router.post("/register", async (req, res) => {
+  console.log(req.body);
   try {
     const { username, email, password } = req.body;
 
@@ -58,25 +60,27 @@ router.get("/user", authenticateToken, async (req, res) => {
 //Get data about token item in the local storage to check if the user is logged in
 router.get("/me", authenticateToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.id).select("-password"); // Exclude password from response
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
     res.json(user);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 });
 
 // Middleware to verify token
-function authenticateToken(req, res, next) {
-  const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ msg: "No token, authorization denied" });
+// function authenticateToken(req, res, next) {
+//   const token = req.header("Authorization");
+//   if (!token) return res.status(401).json({ msg: "No token, authorization denied" });
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    res.status(400).json({ msg: "Invalid token" });
-  }
-}
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     req.user = decoded;
+//     next();
+//   } catch (err) {
+//     res.status(400).json({ msg: "Invalid token" });
+//   }
+// }
 
 module.exports = router;
