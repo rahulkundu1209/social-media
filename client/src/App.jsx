@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import CreatePost from './pages/CreatePost';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Profile from './pages/Profile';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/create" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+          <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
           <Route path="/" element={<Home />} />
         </Routes>
       </Router>
@@ -43,6 +45,9 @@ function NavBar() {
           </>
         )}
       </ul>
+      <div className='homeProfile'>
+        <Link to="/profile"><img src='profile.pic' className='avatar'></img></Link>
+      </div>
       <span className='logo'>
         <h3>FAKEBOOK</h3>
         <p>How much fake can you be?</p>
