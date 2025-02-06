@@ -8,7 +8,7 @@ function Profile() {
   const [userPosts, setUserPosts] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [profileData, setProfileData] = useState({
-    name: user?.name || '',
+    name: user?.username || '',
     email: user?.email || '',
     profilePicture: user?.profilePicture || ''
   });
@@ -89,18 +89,20 @@ function Profile() {
               alt="Profile"
               className="profile-avatar"
             />
-            {editMode && (
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="avatar-upload"
-              />
-            )}
+            {/* {editMode && (
+              //Input for profile picture
+              
+            )} */}
           </div>
           <div className="profile-details">
             {editMode ? (
               <form onSubmit={handleUpdateProfile}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="profile-input"
+              />
                 <input
                   type="text"
                   name="name"
@@ -131,8 +133,8 @@ function Profile() {
               </form>
             ) : (
               <>
-                <h2>{user.name}</h2>
-                <p>{user.email}</p>
+                <h2>{profileData.name}</h2>
+                <p>{profileData.email}</p>
                 <button
                   className="btn-edit"
                   onClick={() => setEditMode(true)}
@@ -150,22 +152,14 @@ function Profile() {
         <div className="posts-grid">
           {userPosts.map(post => (
             <div key={post._id} className="post-card">
-              {post.file && (
-                <div className="post-media">
-                  {post.file.includes('.mp4') ? (
-                    <video controls>
-                      <source src={`http://localhost:5000/uploads/${post.file}`} />
-                    </video>
-                  ) : (
-                    <img
-                      src={`http://localhost:5000/uploads/${post.file}`}
-                      alt="Post media"
-                    />
-                  )}
-                </div>
-              )}
+              {post.image && (
+                <img
+                  src={`http://localhost:5000/uploads/${post.image}`}
+                  alt="Post"
+                  style={{ height: "100%", maxHeight: "400px" }}
+                />
+					)}
               <div className="post-content">
-                <h4>{post.title}</h4>
                 <p>{post.content}</p>
                 <div className="post-stats">
                   <span>Likes: {post.likes}</span>

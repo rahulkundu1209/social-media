@@ -1,10 +1,23 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 const User = require("../models/User");
 const { authenticateToken } = require("../middleware/authMiddleware");
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/profile-pictures/"); // Save in profile-pictures folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`); // Unique filename
+  }
+});
+
+const upload = multer({ storage });
 
 // Register
 router.post("/register", async (req, res) => {
@@ -69,18 +82,27 @@ router.get("/me", authenticateToken, async (req, res) => {
   }
 });
 
-// Middleware to verify token
-// function authenticateToken(req, res, next) {
-//   const token = req.header("Authorization");
-//   if (!token) return res.status(401).json({ msg: "No token, authorization denied" });
+// Update user profile
+router.put("/profile", authenticateToken, upload.single("profilePicture"), async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const profilePicture = req.file ? `/uploads/profile-pictures/${req.file.filename}` : undefined; // Save file path
 
-//   try {
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     req.user = decoded;
-//     next();
-//   } catch (err) {
-//     res.status(400).json({ msg: "Invalid token" });
-//   }
-// }
+    // Find user by ID
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    // Update fields
+    if (name) user.username = name;
+    if (email) user.email = email;
+    if (profilePicture) user.profilePicture = profilePicture; // Save image path
+
+    await user.save();
+
+    res.json({ msg: "Profile updated successfully", user });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+});
 
 module.exports = router;

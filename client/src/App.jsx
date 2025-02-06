@@ -36,7 +36,7 @@ function NavBar() {
         {user ? (
           <>
             <li><Link to="/create">Create Post</Link></li>
-            <li><button onClick={logout}>Logout ({user.name})</button></li>
+            <li><button onClick={logout}>Logout</button></li>
           </>
         ) : (
           <>
